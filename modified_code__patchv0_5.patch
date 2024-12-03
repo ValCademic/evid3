@@ -1,0 +1,1080 @@
+Subject: [PATCH] modified code. patchv0.5
+---
+Index: src/regisDoctor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/regisDoctor.java b/src/regisDoctor.java
+--- a/src/regisDoctor.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/regisDoctor.java	(date 1733183960235)
+@@ -3,9 +3,7 @@
+ import java.awt.event.ActionListener;
+ 
+ import entidades.Doctor;
+-import entidades.Paciente;
+ import metodos.doctoresCRUD;
+-import metodos.pacientesCRUD;
+ 
+ public class regisDoctor extends JFrame {
+     private JButton btnBuscar;
+@@ -17,9 +15,8 @@
+     private JTextField txtApPat;
+     private JTextField txtApMat;
+     private JTextField txtEdad;
+-    private JComboBox comboBox1;
+     private JTextField txtID;
+-
++    private JTextField txtEsp;
+ 
+ 
+     public regisDoctor() {
+@@ -42,15 +39,19 @@
+                         txtApPat.setText("");
+                         txtApMat.setText("");
+                         txtEdad.setText("");
++                        txtEsp.setText("");
+                     }
+ 
+                 }
+                 else{
+-                    //se encontro el paciente
++                    //se encontro el doctor
++                    txtID.setText(a.getID());
+                     txtNombre.setText(a.getNombre());
+                     txtApPat.setText(a.getApellidoPat());
+                     txtApMat.setText(a.getApellidoMat());
+                     txtEdad.setText(String.valueOf(a.getEdad()));
++                    txtEsp.setText(a.getEspecializacion());
++
+                     btnCancelar.setEnabled(true);
+                     btnEliminar.setEnabled(true);
+                 }
+@@ -67,6 +68,7 @@
+                 miDoctor.setApellidoPat(txtApPat.getText());
+                 miDoctor.setApellidoMat(txtApMat.getText());
+                 miDoctor.setEdad(Integer.parseInt(txtEdad.getText()));
++                miDoctor.setEspecializacion(txtEsp.getText());
+ 
+                 doctoresCRUD crud = new doctoresCRUD();
+                 crud.agregarDoctor(miDoctor);
+Index: src/Sistema.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Sistema.java b/src/Sistema.java
+--- a/src/Sistema.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/Sistema.java	(date 1733172340107)
+@@ -22,7 +22,7 @@
+         salirButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+-                int respuesta = JOptionPane.showConfirmDialog(miPanel,"Desea salir del programa?","Salir",JOptionPane.YES_NO_OPTION);
++                int respuesta = JOptionPane.showConfirmDialog(miPanel,"¿Desea salir del programa?","Salir",JOptionPane.YES_NO_OPTION);
+                 if(respuesta == 0){
+                 dispose();
+ 
+Index: src/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Main.java b/src/Main.java
+--- a/src/Main.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/Main.java	(date 1733182130585)
+@@ -20,6 +20,7 @@
+             a1.setApellidoPat("Jimenez");
+             a1.setApellidoMat("Perez");
+             a1.setEdad(19);
++            a1.setSexo("Masculino");
+ 
+             Paciente a2 = new Paciente();
+             a2.setID("0001");
+@@ -27,6 +28,7 @@
+             a2.setApellidoPat("Gutierrez");
+             a2.setApellidoMat("Sanchez");
+             a2.setEdad(18);
++            a2.setSexo("Femenino");
+ 
+             Paciente a3 = new Paciente();
+             a3.setID("0002");
+@@ -34,11 +36,20 @@
+             a3.setApellidoPat("Lopez");
+             a3.setApellidoMat("Pedroza");
+             a3.setEdad(21);
++            a3.setSexo("Masculino");
++
++            Paciente a7 = new Paciente();
++            a7.setID("0003");
++            a7.setNombre("Angelica");
++            a7.setApellidoPat("Castro");
++            a7.setApellidoMat("Juarez");
++            a7.setEdad(17);
++            a7.setSexo("Femenino");
+ 
+             listaPacientes.add(a1);
+             listaPacientes.add(a2);
+             listaPacientes.add(a3);
+-
++            listaPacientes.add(a7);
+ 
+ 
+             FileOutputStream escribir = new FileOutputStream("h:\\Sistema_HealthPlus\\pacientes.txt");
+@@ -46,60 +57,72 @@
+             miStream.writeObject(listaPacientes);
+             miStream.flush();
+             miStream.close();
+-        }catch (FileNotFoundException e) {
++        } catch (FileNotFoundException e) {
+             throw new RuntimeException(e);
+         } catch (IOException e) {
+             throw new RuntimeException(e);
+         }
+ 
+         try {
+-        ArrayList<Doctor> listaDoctores = new ArrayList<Doctor>();
+-        Doctor a0 = new Doctor();
+-        a0.setID("1000");
+-        a0.setNombre("Erick");
+-        a0.setApellidoPat("Lopez");
+-        a0.setApellidoMat("Cazarez");
+-        a0.setEdad(26);
++            ArrayList<Doctor> listaDoctores = new ArrayList<Doctor>();
++            Doctor a0 = new Doctor();
++            a0.setID("1000");
++            a0.setNombre("Erick");
++            a0.setApellidoPat("Lopez");
++            a0.setApellidoMat("Cazarez");
++            a0.setEdad(26);
++            a0.setEspecializacion("Cirugia");
+ 
+-        Doctor a4 = new Doctor();
+-        a4.setID("0034");
+-        a4.setNombre("Edith");
+-        a4.setApellidoPat("Garcia");
+-        a4.setApellidoMat("Suarez");
+-        a4.setEdad(23);
++            Doctor a4 = new Doctor();
++            a4.setID("0034");
++            a4.setNombre("Edith");
++            a4.setApellidoPat("Garcia");
++            a4.setApellidoMat("Suarez");
++            a4.setEdad(23);
++            a4.setEspecializacion("Medicina Interna");
+ 
+-        Doctor a6 = new Doctor();
+-        a6.setID("0015");
+-        a6.setNombre("Mario");
+-        a6.setApellidoPat("Lechuga");
+-        a6.setApellidoMat("Juarez");
+-        a6.setEdad(21);
++            Doctor a6 = new Doctor();
++            a6.setID("0022");
++            a6.setNombre("Mario");
++            a6.setApellidoPat("Lechuga");
++            a6.setApellidoMat("Juarez");
++            a6.setEdad(21);
++            a6.setEspecializacion("Pediatria");
+ 
+-        Doctor a5 = new Doctor();
+-        a5.setID("0015");
+-        a5.setNombre("Samara");
+-        a5.setApellidoPat("Aganza");
+-        a5.setApellidoMat("Montaño");
+-        a5.setEdad(25);
+-        listaDoctores.add(a0);
+-        listaDoctores.add(a4);
+-        listaDoctores.add(a5);
+-        listaDoctores.add(a6);
+-        FileOutputStream escribir = new FileOutputStream("h:\\Sistema_HealthPlus\\doctores.txt");
+-        ObjectOutputStream miStream = new ObjectOutputStream(escribir);
+-        miStream.writeObject(listaDoctores);
+-        miStream.flush();
+-        miStream.close();
+-    }catch (FileNotFoundException e) {
+-        throw new RuntimeException(e);
+-    } catch (IOException e) {
+-        throw new RuntimeException(e);
+-    }
+-        Citas newCita = new Citas("Dr. Edith", "05-12-2024", "10:00", "Resultados examen de tiroide", "0002");
+-        CitasManager.guardarCita(newCita);
+-        Citas newCita2 = new Citas("Dr. Erick", "13-01-2025", "13:25", "Ultrasonido Uterino", "0000");
+-        CitasManager.guardarCita(newCita2);
+-        Citas newCita3 = new Citas("Dr. Mario", "07-12-2024", "07:10", "Cita rutinaria", "0001");
+-        CitasManager.guardarCita(newCita3);
++            Doctor a5 = new Doctor();
++            a5.setID("0015");
++            a5.setNombre("Samara");
++            a5.setApellidoPat("Aganza");
++            a5.setApellidoMat("Montaño");
++            a5.setEdad(25);
++            a5.setEspecializacion("Neurologia");
++
++            listaDoctores.add(a0);
++            listaDoctores.add(a4);
++            listaDoctores.add(a5);
++            listaDoctores.add(a6);
++            FileOutputStream escribir = new FileOutputStream("h:\\Sistema_HealthPlus\\doctores.txt");
++            ObjectOutputStream miStream = new ObjectOutputStream(escribir);
++            miStream.writeObject(listaDoctores);
++            miStream.flush();
++            miStream.close();
++        } catch (FileNotFoundException e) {
++            throw new RuntimeException(e);
++        } catch (IOException e) {
++            throw new RuntimeException(e);
++        }
++        CitasManager.guardarCita(new Citas("Edith Garcia", "05-12-2024", "10:00", "Resultados examen de tiroide", "0002"));
++        CitasManager.guardarCita(new Citas("Erick Lopez", "13-01-2025", "13:25", "Ultrasonido Uterino", "0000"));
++        CitasManager.guardarCita(new Citas("Mario Lechuga", "07-12-2024", "07:10", "Cita rutinaria", "0001"));
++
++        ArrayList<Citas> citas = CitasManager.leerCitas();
++        for (Citas cita : citas) {
++            System.out.println("Doctor: " + cita.getDoctor());
++            System.out.println("Fecha: " + cita.getFecha());
++            System.out.println("Hora: " + cita.getHora());
++            System.out.println("Notas: " + cita.getNotas());
++            System.out.println("Paciente ID: " + cita.getId());
++            System.out.println("----------------------");
++        }
+     }
+ }
+\ No newline at end of file
+Index: src/regisPaciente.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/regisPaciente.java b/src/regisPaciente.java
+--- a/src/regisPaciente.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/regisPaciente.java	(date 1733172340102)
+@@ -78,12 +78,13 @@
+ 
+                 pacientesCRUD crud = new pacientesCRUD();
+                 crud.agregarPaciente(miPaciente);
++                JOptionPane.showMessageDialog(miPanel,"Se ha agregado exitosamente.");
+             }
+         });
+         btnCancelar.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+-                int respuesta = JOptionPane.showConfirmDialog(miPanel, "Desea volver al menu?", "Salir", JOptionPane.YES_NO_OPTION);
++                int respuesta = JOptionPane.showConfirmDialog(miPanel, "¿Desea volver al menu?", "Salir", JOptionPane.YES_NO_OPTION);
+                 if (respuesta == 0) {
+                     dispose();
+                     String[] tipoUsuario = {"admin"};
+Index: src/crearCita.form
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/crearCita.form b/src/crearCita.form
+--- a/src/crearCita.form	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/crearCita.form	(date 1733139532409)
+@@ -263,11 +263,13 @@
+                 <preferred-size width="150" height="-1"/>
+               </grid>
+             </constraints>
+-            <properties/>
++            <properties>
++              <text value=""/>
++            </properties>
+           </component>
+         </children>
+       </grid>
+-      <grid id="6a60" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
++      <grid id="6a60" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+         <margin top="0" left="0" bottom="0" right="0"/>
+         <constraints>
+           <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+@@ -277,7 +279,7 @@
+         <children>
+           <component id="38202" class="javax.swing.JButton" binding="cancelarButton" default-binding="true">
+             <constraints>
+-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
++              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+             </constraints>
+             <properties>
+               <text value="Cancelar"/>
+@@ -297,6 +299,14 @@
+             </constraints>
+             <properties>
+               <text value="Buscar"/>
++            </properties>
++          </component>
++          <component id="d7c17" class="javax.swing.JButton" binding="eliminarButton" default-binding="true">
++            <constraints>
++              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
++            </constraints>
++            <properties>
++              <text value="Eliminar"/>
+             </properties>
+           </component>
+         </children>
+Index: src/entidades/Paciente.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/entidades/Paciente.java b/src/entidades/Paciente.java
+--- a/src/entidades/Paciente.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/entidades/Paciente.java	(date 1733167847943)
+@@ -4,22 +4,25 @@
+ 
+ public class Paciente implements Serializable
+ {
++    private static final long serialVersionUID = 1L;
+     private String id, nombre, apellidoPat, apellidoMat;
+     private int edad;
++    private String sexo = "Otro";
+     private ArrayList<Citas> citas;  // List of appointments
+ 
+     // Constructor with ID, name, and last names
+-    public Paciente(String id, String nombre, String apellidoPat, String apellidoMat)
++    public Paciente(String id, String nombre, String apellidoPat, String apellidoMat, String sexo)
+     {
+         this.id = id;
+         this.nombre = nombre;
+         this.apellidoPat = apellidoPat;
+         this.apellidoMat = apellidoMat;
++        this.sexo =  sexo;
+         this.citas = new ArrayList<>();  // Initialize the citas list
+     }
+ 
+     public Paciente() {
+-        System.out.println("Se mando a llamar el constructor.");
++        this.citas = new ArrayList<>();
+     }
+ 
+     // Getter and setter for the ID
+@@ -65,7 +68,13 @@
+     public void setEdad(int edad) {
+         this.edad = edad;
+     }
++    public String getSexo() {
++        return sexo;
++    }
+ 
++    public void setSexo(String sexo) {
++        this.sexo = sexo;
++    }
+     // Getter for the citas list (appointments)
+     public ArrayList<Citas> getCitas() {
+         return citas;
+Index: src/metodos/CitasManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/metodos/CitasManager.java b/src/metodos/CitasManager.java
+--- a/src/metodos/CitasManager.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/metodos/CitasManager.java	(date 1733171753918)
+@@ -8,18 +8,6 @@
+ 
+     private static final String FILE_PATH = "h:\\Sistema_HealthPlus\\citas.txt";  // File path
+ 
+-    // Method to save a list of appointments to the file
+-    public static void guardarCita(Citas cita) {
+-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+-            // Write the appointment details as a comma-separated line
+-            writer.write(cita.getId() + "," + cita.getDoctor() + "," + cita.getFecha() + "," + cita.getHora() + "," + cita.getNotas());
+-            writer.newLine();  // Add a new line after each appointment
+-            System.out.println("Cita creada y guardada: " + cita.toString());
+-        } catch (IOException e) {
+-            System.err.println("Error escribiendo en archivo: " + e.getMessage());
+-        }
+-    }
+-
+     // Method to read all appointments from the file
+     public static ArrayList<Citas> leerCitas() {
+         ArrayList<Citas> citasList = new ArrayList<>();
+@@ -38,6 +26,17 @@
+         }
+         return citasList;
+     }
++    // Method to save a list of appointments to the file
++    public static void guardarCita(Citas cita) {
++        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
++            // Write the appointment details as a comma-separated line
++            writer.write(cita.getId() + "," + cita.getDoctor() + "," + cita.getFecha() + "," + cita.getHora() + "," + cita.getNotas());
++            writer.newLine();  // Add a new line after each appointment
++            System.out.println("Cita creada y guardada.");
++        } catch (IOException e) {
++            System.err.println("Error escribiendo en archivo: " + e.getMessage());
++        }
++    } // Method to retrieve an appointment by patient ID
+ 
+     // Method to get an appointment by patient ID
+     public static Citas getAppointmentByPatientId(String pacienteId) {
+Index: src/entidades/Citas.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/entidades/Citas.java b/src/entidades/Citas.java
+--- a/src/entidades/Citas.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/entidades/Citas.java	(date 1733170069349)
+@@ -18,26 +18,49 @@
+         this.pacienteId = pacienteId;
+     }
+ 
++    public Citas() {
++        System.out.println();
++    }
++
+     // Getter methods
++
++    public String setDoctor(String doctor) {
++        this.doctor = doctor;
++        return doctor;
++    }
+     public String getDoctor() {
+         return doctor;
+     }
+-
+     public String getFecha() {
+         return fecha;
+     }
++    public String setFecha(String fecha) {
++        this.fecha = fecha;
++        return fecha;
++    }
+ 
+     public String getHora() {
+         return hora;
+     }
++    public String setHora(String hora) {
++        this.hora = hora;
++        return hora;
++    }
+ 
+     public String getNotas() {
+         return notas;
+     }
+-
++    public String setNotas(String notas) {
++        this.notas = notas;
++        return notas;
++    }
+     public String getId() {
+         return pacienteId;
+     }
++    public String setId(String pacienteId) {
++        this.pacienteId = pacienteId;
++        return pacienteId;
++    }
+ 
+     // To return a string representation of the Cita
+     @Override
+Index: src/entidades/Doctor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/entidades/Doctor.java b/src/entidades/Doctor.java
+--- a/src/entidades/Doctor.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/entidades/Doctor.java	(date 1733184370267)
+@@ -2,10 +2,10 @@
+ import java.io.Serializable;
+ 
+ public class Doctor implements Serializable {
+-        private String id, cita, nombre, apellidoPat, apellidoMat;
++        private String id, cita, nombre, apellidoPat, apellidoMat, especializacion;
+         private int edad;
+ 
+-        public Doctor()
++        public Doctor(String id, String nombre, String apellidoPat, String apellidoMat, int i, String especializacion)
+         {
+             System.out.println("Se registró exitosamente.");
+         }
+@@ -16,16 +16,28 @@
+             this.nombre = n;
+         }
+ 
+-        public String getID()
++
++
++    public String getID()
+         {
+ 
+             return id;
+         }
+ 
+-        public void setID(String id)
+-        {
+-            this.id = id;
+-        }
++        public void setEspecializacion(String especializacion)
++        {
++            this.especializacion = especializacion;
++        }
++    public String getEspecializacion()
++    {
++
++        return especializacion;
++    }
++
++    public void setID(String id)
++    {
++        this.id = id;
++    }
+ 
+         public String getCita()
+         {
+Index: src/metodos/doctoresCRUD.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/metodos/doctoresCRUD.java b/src/metodos/doctoresCRUD.java
+--- a/src/metodos/doctoresCRUD.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/metodos/doctoresCRUD.java	(date 1733184507384)
+@@ -1,53 +1,52 @@
+ package metodos;
+ 
++import entidades.Citas;
+ import entidades.Doctor;
+ import java.io.*;
+ import java.util.ArrayList;
+ 
+ public class doctoresCRUD {
++    public static void main(String[] args) {
+ 
+-    public static void agregarDoctor (Doctor a){
+-        ArrayList<String> doctores = new ArrayList<String>();
++        ArrayList<Doctor> listaDoctores = new ArrayList<>();
++        try (BufferedReader reader = new BufferedReader(new FileReader("doctores.txt"))) {
++            String line;
++            while ((line = reader.readLine()) != null) {
++                String[] parts = line.split(",");
++                if (parts.length == 6) { // Ensure we have 6 attributes
++                    String id = parts[0];
++                    String nombre = parts[1];
++                    String apellidoPat = parts[2];
++                    String apellidoMat = parts[3];
++                    String edad = parts[4];
++                    String especialidad = parts[5];
+ 
+-        try {
+-            FileInputStream leer =
+-                    new FileInputStream("h:\\Sistema_HealthPlus\\doctores.txt");
+-            ObjectInputStream lectorObjetos = new ObjectInputStream(leer);
+-            Object o = lectorObjetos.readObject();
+-            ArrayList<Doctor> lista = (ArrayList<Doctor>) o;
++                    // Create new Doctor object and assign values
++                    Doctor doctor = new Doctor(id, nombre, apellidoPat, apellidoMat, Integer.parseInt(edad), especialidad);
++                    listaDoctores.add(doctor);
++                }
++            }
+ 
+-            lista.add(a);
+-            lectorObjetos.close();
+-            leer.close();
+-
+-            FileOutputStream escribir =
+-                    new FileOutputStream("h:\\Sistema_HealthPlus\\doctores.txt");
+-            ObjectOutputStream escritorObjetos = new ObjectOutputStream(escribir);
+-            escritorObjetos.writeObject(lista);
+-            escritorObjetos.flush();
+-
+-            escritorObjetos.close();
+-            escribir.close();
+-
+-        } catch (FileNotFoundException e) {
+-            System.out.println("No se encontro el archivo.");
+-        } catch (IOException e) {
+-            System.out.println("Error IO: "+e.getMessage());
+-        } catch (ClassNotFoundException e) {
+-            System.out.println("No es un objeto valido que se pueda leer.");
++            // Display loaded doctors
++            for (Doctor doctor : listaDoctores) {
++                System.out.println(doctor.toString());
++            }
++        }
++        catch (IOException e) {
++            e.printStackTrace();
+         }
+     }
+ 
+-    public Doctor getInfoDoctorPorNombre(String id) {
++    public static Doctor getInfoDoctorPorNombre(String n) {
+         try (FileInputStream leer = new FileInputStream("h:\\Sistema_HealthPlus\\doctores.txt");
+              ObjectInputStream miStream2 = new ObjectInputStream(leer)) {
+             Object miLista = miStream2.readObject();
+             ArrayList<Doctor> listaDoctores = (ArrayList<Doctor>) miLista;
+-
++            n = n.split(" ")[0];  // Get first name only
+             for (Doctor k : listaDoctores) {
+-                System.out.println("Comparando con el #ID: " + k.getID()); // Debugging each patient ID
+-                if (id.equals(k.getID())) {
+-                    return k;
++                System.out.println("Comparando con el Registrado: " + k.getNombre()); // Debugging each doctor name
++                if (n.equals(k.getNombre())) {
++                    return k;  // Return doctor if the name matches
+                 }
+             }
+         } catch (FileNotFoundException e) {
+@@ -62,14 +61,50 @@
+         }
+         return null;
+     }
++    // Function to add a doctor to the list and update the file
++    public static void agregarDoctor(String id, String nombre, String apellidoPat, String apellidoMat, int edad, String especialidad) {
++        ArrayList<Doctor> listaDoctores = new ArrayList<>();
++
++        // Try reading the existing doctors
++        try (BufferedReader reader = new BufferedReader(new FileReader("doctores.txt"))) {
++            String line;
++            while ((line = reader.readLine()) != null) {
++                String[] parts = line.split(",");
++                if (parts.length == 6) { // Ensure we have 6 attributes
++                    String existingId = parts[0];
++                    String existingNombre = parts[1];
++                    String existingApellidoPat = parts[2];
++                    String existingApellidoMat = parts[3];
++                    String existingEdad = parts[4];
++                    String existingEspecialidad = parts[5];
++                    Doctor doctor = new Doctor(existingId, existingNombre, existingApellidoPat, existingApellidoMat, Integer.parseInt(existingEdad), existingEspecialidad);
++                    listaDoctores.add(doctor);
++                }
++            }
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
+ 
+-    public void actualizarDoctor()
+-    {
++        // Create new Doctor object and add to the list
++        Doctor newDoctor = new Doctor(id, nombre, apellidoPat, apellidoMat, edad, especialidad);
++        listaDoctores.add(newDoctor);
+ 
++        // Write updated list back to the file
++        try (BufferedWriter writer = new BufferedWriter(new FileWriter("doctores.txt"))) {
++            for (Doctor doctor : listaDoctores) {
++                writer.write(doctor.getId() + "," + doctor.getNombre() + "," + doctor.getApellidoPat() + "," +
++                        doctor.getApellidoMat() + "," + doctor.getEdad() + "," + doctor.getEspecialidad() + "\n");
++            }
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++
++    public void actualizarDoctor() {
++        // Method to update doctor details
+     }
+ 
+-    public void eliminarDoctor(){
+-
+-
++    public void eliminarDoctor() {
++        // Method to delete doctor details
+     }
+ }
+Index: src/prueba.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/prueba.java b/src/prueba.java
+--- a/src/prueba.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/prueba.java	(date 1733168158576)
+@@ -20,6 +20,7 @@
+             System.out.println(resultado.getNombre());
+             System.out.println(resultado.getApellidoPat());
+             System.out.println(resultado.getEdad());
++            System.out.println(resultado.getSexo());
+         }
+         String patientIdToSearch = "0002";
+         Citas cita = CitasManager.getAppointmentByPatientId(patientIdToSearch);
+Index: src/regisDoctor.form
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/regisDoctor.form b/src/regisDoctor.form
+--- a/src/regisDoctor.form	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/regisDoctor.form	(date 1733168158565)
+@@ -63,7 +63,7 @@
+                   </grid>
+                 </constraints>
+                 <properties>
+-                  <text value="Genero:"/>
++                  <text value="Especializacion:"/>
+                 </properties>
+               </component>
+               <component id="4299e" class="javax.swing.JLabel">
+@@ -118,25 +118,23 @@
+                 </constraints>
+                 <properties/>
+               </component>
+-              <component id="5c97" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
++              <component id="27368" class="javax.swing.JTextField" binding="txtID">
+                 <constraints>
+-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
++                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
++                    <preferred-size width="150" height="-1"/>
++                  </grid>
+                 </constraints>
+-                <properties>
+-                  <model>
+-                    <item value="Masculino"/>
+-                    <item value="Femenino"/>
+-                    <item value="Otro"/>
+-                  </model>
+-                </properties>
++                <properties/>
+               </component>
+-              <component id="27368" class="javax.swing.JTextField" binding="txtID">
++              <component id="fb30f" class="javax.swing.JTextField" binding="txtEsp">
+                 <constraints>
+-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
++                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                     <preferred-size width="150" height="-1"/>
+                   </grid>
+                 </constraints>
+-                <properties/>
++                <properties>
++                  <text value=""/>
++                </properties>
+               </component>
+             </children>
+           </grid>
+Index: src/crearCita.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/crearCita.java b/src/crearCita.java
+--- a/src/crearCita.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/crearCita.java	(date 1733181957680)
+@@ -1,5 +1,7 @@
++import entidades.Citas;
+ import entidades.Doctor;
+ import entidades.Paciente;
++import metodos.CitasManager;
+ import metodos.doctoresCRUD;
+ import metodos.pacientesCRUD;
+ 
+@@ -32,9 +34,20 @@
+     private JPanel miPanel;
+     private JComboBox cmbDoctor;
+     private JTextField txtDoctor;
++    private JButton eliminarButton;
+     ArrayList<Paciente> lista;
+     ArrayList<Doctor> list;
+ 
++    // Main method
++    public static void main(String[] args) {
++        crearCita vC = new crearCita();
++        vC.setContentPane(vC.miPanel);
++        vC.setSize(500, 500);
++        vC.setTitle("Citas");
++        vC.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
++        vC.setVisible(true);
++    }
++
+     public boolean validaFecha(String fecha) {
+         SimpleDateFormat formatoFecha =
+                 new SimpleDateFormat("dd/MM/yyyy");
+@@ -47,9 +60,9 @@
+         }
+     }
+ 
+-    //método constructor
++    // Constructor method
+     public crearCita() {
+-        //conectarme al archivo y extraer la lista
++        // Load data from the files
+         try {
+             FileInputStream leer =
+                     new FileInputStream("h:\\Sistema_HealthPlus\\pacientes.txt");
+@@ -65,9 +78,10 @@
+ 
+         } catch (FileNotFoundException e) {
+             throw new RuntimeException(e);
+-        } catch (ClassNotFoundException|IOException e) {
++        } catch (ClassNotFoundException | IOException e) {
+             throw new RuntimeException(e);
+         }
++
+         try {
+             FileInputStream leer =
+                     new FileInputStream("h:\\Sistema_HealthPlus\\doctores.txt");
+@@ -83,72 +97,103 @@
+ 
+         } catch (FileNotFoundException e) {
+             throw new RuntimeException(e);
+-        } catch (ClassNotFoundException|IOException e) {
++        } catch (ClassNotFoundException | IOException e) {
+             throw new RuntimeException(e);
+         }
+ 
+-        cmbPaciente.addActionListener(new ActionListener() {
+-            @Override
+-            public void actionPerformed(ActionEvent e) {
+-                pacientesCRUD crud = new pacientesCRUD();
+-                String mat = String.valueOf(cmbPaciente.getSelectedItem());
+-                String nombreCompleto;
+-                Paciente a = crud.getInfoPacientePorNombre(mat);
+-                nombreCompleto = a.getNombre() + " " + a.getApellidoPat()+ " " + a.getApellidoMat();
+-                txtPaciente.setText(nombreCompleto);
+-                String Id= a.getID();
+-                String cita = String.valueOf(getAppointmentByPatientId(Id));
+-                System.out.println(Id);
+-
+-            }
+-        });
+-        btnIngresar.addActionListener(new ActionListener() {
+-            @Override
+-            public void actionPerformed(ActionEvent e) {
+-                String fecha = cmbDia.getSelectedItem().toString() + "/" + cmbMes.getSelectedItem().toString() + "/" + cmbAnio.getSelectedItem().toString();
+-
+-                boolean resultado = validaFecha(fecha);
+-                if (resultado == true) {
+-                    JOptionPane.showMessageDialog(miPanel, "No existen impedimientos en la fecha establecida.");
+-                } else {
+-                    JOptionPane.showMessageDialog(miPanel, "Error en la fecha.");
+-                }
+-            }
+-        });
+-// ActionListener for selecting a patient from cmbPaciente
+-        cmbPaciente.addActionListener(new ActionListener() {
+-            @Override
+-            public void actionPerformed(ActionEvent e) {
+-                String patientID = cmbPaciente.getSelectedItem().toString();
+-                Paciente selectedPatient = getPacienteByID(patientID);
+-
+-                if (selectedPatient != null) {
+-                    txtPaciente.setText(selectedPatient.getNombre() + " " + selectedPatient.getApellidoPat());
+-                    }
+-            }
+-        });
+-
+-        // ActionListener for the "Ingresar" button (to validate date)
+-        btnIngresar.addActionListener(new ActionListener() {
++        // ActionListener for the Buscar button
++        buscarButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+-                String fecha = cmbDia.getSelectedItem().toString() + "/" +
+-                        cmbMes.getSelectedItem().toString() + "/" +
+-                        cmbAnio.getSelectedItem().toString();
+-                boolean resultado = validaFecha(fecha);
+-                if (resultado) {
+-                    JOptionPane.showMessageDialog(miPanel, "No existen impedimientos en la fecha establecida.");
+-                } else {
+-                    JOptionPane.showMessageDialog(miPanel, "Error en la fecha.");
++
++                String id = String.valueOf(cmbPaciente.getSelectedItem());
++                try (FileInputStream leer = new FileInputStream("h:\\Sistema_HealthPlus\\pacientes.txt");
++                     ObjectInputStream miStream2 = new ObjectInputStream(leer)) {
++
++                    ArrayList<Paciente> listaPacientes = (ArrayList<Paciente>) miStream2.readObject();
++
++                    for (Paciente k : listaPacientes) {
++                        System.out.println("Comparando con el #ID: " + k.getID()); // Debugging each patient ID
++
++                        if (id.equals(k.getID())) {
++                            Citas cita = CitasManager.getAppointmentByPatientId(k.getID());
++                            if (cita != null) {
++                                // Update GUI components
++                                String fecha = cita.getFecha();
++                                String doctor = cita.getDoctor();
++                                String notas = cita.getNotas();
++                                cmbHora.setSelectedItem(cita.getHora().substring(0, 2));
++                                cmbMinutos.setSelectedItem(cita.getHora().substring(3, 5));
++                                cmbPaciente.setSelectedItem(k);
++                                System.out.println(doctoresCRUD.getInfoDoctorPorNombre(String.valueOf(cita.getDoctor())));
++                                txtDoctor.setText("Dr. "+cita.getDoctor());
++                                txtPaciente.setText(k.getNombre()+" "+k.getApellidoPat()+" "+k.getApellidoMat());
++                                txtFecha.setText(cita.getFecha());
++                                txtObserv.setText(cita.getNotas());
++                                txtObserv.setEditable(false);
++
++                                JTextField[] txts = { txtPaciente, txtDoctor, txtFecha };
++                                for (JTextField textField : txts) {
++                                    textField.setEditable(false);  // Makes each text field non-editable
++                                }
++                                JComboBox[] cmbs1 = { cmbDoctor, cmbAnio, cmbMes, cmbDia, cmbHora, cmbMinutos };
++
++                                for (JComboBox comboBox : cmbs1) {
++                                    comboBox.setEditable(false);  // Makes each combo box non-editable
++                                }
++                                JComponent[] cmbs2 = { cmbDoctor, cmbAnio, cmbMes,cmbDia ,cmbHora, cmbMinutos  };
++
++                                for (JComponent component : cmbs2) {
++                                    component.setEnabled(false);  // Disables each component
++                                }
++
++                                JOptionPane.showMessageDialog(miPanel, "Se ha encontrado al paciente #" + k.getID() + " exitosamente.");
++                                miPanel.revalidate();
++                                miPanel.repaint();
++                            } else {
++                                JOptionPane.showMessageDialog(miPanel, "No se encontraron citas para este paciente.");
++                                cmbHora.setSelectedItem(null);
++                                cmbMinutos.setSelectedItem(null);
++                                cmbPaciente.setSelectedItem(k);
++                                cmbDoctor.setSelectedItem(null);
++                                txtDoctor.setText(null);
++                                txtPaciente.setText(k.getNombre()+" "+k.getApellidoPat()+" "+k.getApellidoMat());
++                                txtFecha.setText(null);
++                                txtObserv.setText(null);
++                                txtPaciente.setEditable(false);
++                                JTextField[] txts = { txtDoctor, txtFecha };
++                                for (JTextField textField : txts) {
++                                    textField.setEditable(true);  // Makes each text field non-editable
++                                }
++                                JComboBox[] cmbs1 = { cmbDoctor, cmbAnio, cmbMes, cmbDia, cmbHora, cmbMinutos };
++
++                                for (JComboBox comboBox : cmbs1) {
++                                    comboBox.setEditable(true);  // Makes each combo box non-editable
++                                }
++                                JComponent[] cmbs2 = { cmbDoctor, cmbAnio, cmbMes,cmbDia ,cmbHora, cmbMinutos  };
++
++                                for (JComponent component : cmbs2) {
++                                    component.setEnabled(true);  // Disables each component
++                                }
++                            }
++                            return;
++                        }
++                    }
++                    JOptionPane.showMessageDialog(miPanel, "Paciente no encontrado.");
++                } catch (FileNotFoundException ex) {
++                    JOptionPane.showMessageDialog(miPanel, "Archivo no encontrado: " + ex.getMessage());
++                } catch (ClassNotFoundException | IOException ex) {
++                    JOptionPane.showMessageDialog(miPanel, "Error: " + ex.getMessage());
+                 }
+             }
+         });
+ 
+-        // ActionListener for "Cancelar" button
++        // Other action listeners go here...
++
+         cancelarButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+-                int respuesta = JOptionPane.showConfirmDialog(miPanel, "Desea volver al menu?", "Salir", JOptionPane.YES_NO_OPTION);
++                int respuesta = JOptionPane.showConfirmDialog(miPanel, "¿Desea volver al menu?", "Salir", JOptionPane.YES_NO_OPTION);
+                 if (respuesta == 0) {
+                     dispose();
+                     String[] tipoUsuario = {"admin"};
+@@ -156,38 +201,64 @@
+                 }
+             }
+         });
++        cmbPaciente.addActionListener(new ActionListener() {
++            @Override
++            public void actionPerformed(ActionEvent e) {
++                String id = String.valueOf(cmbPaciente.getSelectedItem());
++                try (FileInputStream leer = new FileInputStream("h:\\Sistema_HealthPlus\\pacientes.txt");
++                     ObjectInputStream miStream2 = new ObjectInputStream(leer)) {
++
++                    ArrayList<Paciente> listaPacientes = (ArrayList<Paciente>) miStream2.readObject();
++                    for (Paciente k : listaPacientes) {
++                        System.out.println("Comparando con el #ID: " + k.getID()); // Debugging each patient ID
++
++                        if (id.equals(k.getID())) {
++                            Citas cita = CitasManager.getAppointmentByPatientId(k.getID());
++                                cmbPaciente.setSelectedItem(k);
++                             txtPaciente.setText(k.getNombre() + " " + k.getApellidoPat() + " " + k.getApellidoMat());
++                                miPanel.revalidate();
++                                miPanel.repaint();
++                            return;
++                        }
++                    }
++
++                } catch (FileNotFoundException | ClassNotFoundException ex) {
++                    throw new RuntimeException(ex);
++                } catch (IOException ex) {
++                    throw new RuntimeException(ex);
++                }
++            }
++        });
++
+         cmbDoctor.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+-                doctoresCRUD crud = new doctoresCRUD();
+                 String id = String.valueOf(cmbDoctor.getSelectedItem());
+-                String nombreCompleto;
+-                Doctor a = crud.getInfoDoctorPorNombre(id);
+-                nombreCompleto = a.getNombre() + " " + a.getApellidoPat()+ " " + a.getApellidoMat();
+-                txtDoctor.setText(nombreCompleto);
+-                String Id= a.getID();
+-                String cita = String.valueOf(getAppointmentByPatientId(Id));
+-                System.out.println(Id);
+-            }
+-        });
+-    }
++                try (FileInputStream leer = new FileInputStream("h:\\Sistema_HealthPlus\\doctores.txt");
++                     ObjectInputStream miStream2 = new ObjectInputStream(leer)) {
++
++                    ArrayList<Doctor> listaDoctores = (ArrayList<Doctor>) miStream2.readObject();
++                    for (Doctor k : listaDoctores) {
++                        System.out.println("Comparando con el #ID: " + k.getID()); // Debugging each patient ID
++
++                        if (id.equals(k.getID())) {
++                            Citas cita = CitasManager.getAppointmentByPatientId(k.getID());
++                            if (cita == null) {
++                                cmbDoctor.setSelectedItem(k);
++                                txtDoctor.setText("Dr. "+k.getNombre() + " " + k.getApellidoPat() + " " + k.getApellidoMat());
++                                miPanel.revalidate();
++                                miPanel.repaint();
++                            }
++                            return;
++                        }
++                    }
+ 
+-    // Get Paciente object by ID
+-    private Paciente getPacienteByID(String id) {
+-        for (Paciente p : lista) {
+-            if (p.getID().equals(id)) {
+-                return p;
+-            }
+-        }
+-        return null;
++                } catch (FileNotFoundException | ClassNotFoundException ex) {
++                    throw new RuntimeException(ex);
++                } catch (IOException ex) {
++                    throw new RuntimeException(ex);
++                }
++            }
++        });
+     }
+-
+-    public static void main(String[] args) {
+-        crearCita vC = new crearCita();
+-        vC.setContentPane(vC.miPanel);
+-        vC.setSize(500, 500);
+-        vC.setTitle("Citas");
+-        vC.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+-        vC.setVisible(true);
+-    }
+ }
+\ No newline at end of file
+Index: src/Login.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Login.java b/src/Login.java
+--- a/src/Login.java	(revision 563f997c51a3c6779f2f21f1307c8c2618217706)
++++ b/src/Login.java	(date 1733172085786)
+@@ -21,12 +21,14 @@
+                     JOptionPane.showMessageDialog(miPanel,"Bienvenido, Administrador");
+                     dispose();
+                     String[] tipoUsuario={"admin"};
+-                    crearCita.main(tipoUsuario);
++                    Sistema.main(tipoUsuario);
+                 }
+                 else if(txtUsuario.getText().equals("usuario") && txtPassword.getText().equals("2222"))
+                 {
+                     JOptionPane.showMessageDialog(miPanel,"Bienvenido, Usuario");
+-
++                    dispose();
++                    String[] tipoUsuario={"usuario"};
++                    Sistema.main(tipoUsuario);
+                 }
+                 else
+                 {
